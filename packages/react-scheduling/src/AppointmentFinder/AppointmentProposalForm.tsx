@@ -22,7 +22,7 @@ import type { DateTimeRange } from '../types';
 import { AppointmentActorSelect } from './AppointmentActorSelect';
 import { AppointmentDayTimes } from './AppointmentDayTimes';
 import classes from './AppointmentFinder.module.css';
-import type { SchedulingActor, SchedulingRole } from './AppointmentFinder.roles';
+import type { SchedulingActorValue, SchedulingRole } from './AppointmentFinder.roles';
 import { getActorRoleLabel, SCHEDULING_ROLES } from './AppointmentFinder.roles';
 import type { ActorSelections, ScheduleCandidate } from './AppointmentFinder.schedules';
 import {
@@ -427,7 +427,7 @@ interface ChosenTimeProps {
   /** IANA timezone the visit is held in. */
   readonly timezone: string | undefined;
   /** Who the chosen time is held on. */
-  readonly actors: readonly SchedulingActor[];
+  readonly actors: readonly SchedulingActorValue[];
   readonly searching: boolean;
   /** What is still owed before a time can be searched for, if anything. */
   readonly blockedBy: string | undefined;
@@ -482,7 +482,7 @@ function ChosenTime(props: ChosenTimeProps): JSX.Element {
 interface ChosenTimeCommitmentProps {
   readonly appointment: Appointment;
   /** Who the time is held on. */
-  readonly actors: readonly SchedulingActor[];
+  readonly actors: readonly SchedulingActorValue[];
 }
 
 /**
