@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: Copyright Orangebot, Inc. and Medplum contributors
 // SPDX-License-Identifier: Apache-2.0
 import type { WithId } from '@medplum/core';
-import type { Appointment, HealthcareService, Resource } from '@medplum/fhirtypes';
+import type { Appointment, HealthcareService } from '@medplum/fhirtypes';
 import { useCallback, useMemo, useState } from 'react';
 import type { DateTimeRange } from '../types';
+import type { SchedulingActorResource } from './AppointmentFinder.roles';
 import type { ActorCombination } from './AppointmentFinder.schedules';
 import type { AppointmentDay } from './AppointmentFinder.times';
 import {
@@ -36,7 +37,7 @@ export interface UseDaySearchOptions {
    * already read, so a group can be headed by the actor itself rather than by whatever
    * `$find` copied off the Schedule.
    */
-  readonly actorResources?: ReadonlyMap<string, WithId<Resource>>;
+  readonly actorResources?: ReadonlyMap<string, SchedulingActorResource>;
   /** Fired when the days picked change, so the caller can drop what it chose from the old ones. */
   readonly onDaysChanged?: () => void;
 }
