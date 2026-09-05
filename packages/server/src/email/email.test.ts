@@ -13,7 +13,7 @@ import { Readable } from 'stream';
 import { vi } from 'vitest';
 import { initAppServices, shutdownApp } from '../app';
 import { getConfig, loadTestConfig } from '../config/loader';
-import { getGlobalSystemRepo } from '../fhir/repo';
+import { getTestProjectSystemRepo } from '../fhir/repository/test-utils';
 import { globalLogger } from '../logger';
 import { getBinaryStorage } from '../storage/loader';
 import { withTestContext } from '../test.setup';
@@ -31,7 +31,7 @@ vi.mock('nodemailer', () => ({
 }));
 
 describe('Email', () => {
-  const systemRepo = getGlobalSystemRepo();
+  const systemRepo = getTestProjectSystemRepo();
   let mockSESv2Client: AwsClientStub<SESv2Client>;
 
   beforeAll(async () => {
