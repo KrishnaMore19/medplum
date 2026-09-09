@@ -49,15 +49,18 @@ export async function getRepoForLogin(
   extendedMode?: boolean,
   remoteAddress?: string
 ): Promise<Repository> {
-  const { login, membership: realMembership, onBehalfOfMembership } = authState;
+  const { login, membership: realMembership, onBehalfOfMembership, project: realProject } = authState;
   const membership = onBehalfOfMembership ?? realMembership;
   const accessPolicy = await getAccessPolicyForLogin(authState);
 
-  const globalSystemRepo = getGlobalSystemRepo();
   let profile: WithId<ProfileResource | Bot | ClientApplication> | undefined = authState.profile;
   if (!profile) {
     try {
-      profile = await globalSystemRepo.readReference<ProfileResource | Bot | ClientApplication>(realMembership.profile);
+      // project system repo since not all profile resource types are global
+      const realProjectSystemRepo = await getProjectSystemRepo(realProject);
+      profile = await realProjectSystemRepo.readReference<ProfileResource | Bot | ClientApplication>(
+        realMembership.profile
+      );
     } catch (err: unknown) {
       if (!(err instanceof OperationOutcomeError && isNotFound(err.outcome))) {
         throw err;
@@ -65,8 +68,10 @@ export async function getRepoForLogin(
     }
   }
 
-  let project = authState.project;
+  let project = realProject;
+  let globalSystemRepo: SystemRepository | undefined;
   if (membership.project.reference !== realMembership.project.reference) {
+    globalSystemRepo = getGlobalSystemRepo();
     project = await globalSystemRepo.readReference<Project>(membership.project);
   }
 
@@ -79,8 +84,8 @@ export async function getRepoForLogin(
       }
     }
 
-    const systemRepo = await getProjectSystemRepo(project);
-    const linkedProjectsOrError = await systemRepo.readReferences<Project>(linkedProjectRefs);
+    globalSystemRepo ??= getGlobalSystemRepo();
+    const linkedProjectsOrError = await globalSystemRepo.readReferences<Project>(linkedProjectRefs);
     for (let i = 0; i < linkedProjectsOrError.length; i++) {
       const linkedProjectOrError = linkedProjectsOrError[i];
       if (isResource(linkedProjectOrError)) {

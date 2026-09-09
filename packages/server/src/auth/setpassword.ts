@@ -8,7 +8,7 @@ import { body } from 'express-validator';
 import { pwnedPassword } from 'hibp';
 import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from '../constants';
 import { sendOutcome } from '../fhir/outcomes';
-import type { SystemRepository } from '../fhir/repo';
+import type { SuperAdminRepository } from '../fhir/repo';
 import { getGlobalSystemRepo } from '../fhir/repo';
 import { timingSafeEqualStr } from '../oauth/utils';
 import { makeValidationMiddleware } from '../util/validator';
@@ -51,21 +51,21 @@ export async function setPasswordHandler(req: Request, res: Response): Promise<v
   sendOutcome(res, allOk);
 }
 
-export async function setPassword(systemRepo: SystemRepository, user: WithId<User>, password: string): Promise<void> {
+export async function setPassword(repo: SuperAdminRepository, user: WithId<User>, password: string): Promise<void> {
   const numPwns = await pwnedPassword(password);
   if (numPwns > 0) {
     throw new OperationOutcomeError(badRequest('Password found in breach database'));
   }
 
   const passwordHash = await bcryptHashPassword(password);
-  await systemRepo.updateResource<User>({ ...user, passwordHash });
+  await repo.updateResource<User>({ ...user, passwordHash });
 
-  const activeSessions = await systemRepo.search<Login>({
+  const activeSessions = await repo.search<Login>({
     resourceType: 'Login',
     filters: [{ code: 'user', operator: Operator.EQUALS, value: getReferenceString(user) }],
   });
   for (const entry of activeSessions.entry ?? EMPTY) {
     const login = entry.resource as Login;
-    await systemRepo.updateResource({ ...login, revoked: true });
+    await repo.updateResource({ ...login, revoked: true });
   }
 }

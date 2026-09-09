@@ -309,8 +309,7 @@ describe('On Behalf Of', () => {
       const { client } = adminAccount1;
       const basicAuth = 'Basic ' + Buffer.from(client.id + ':' + client.secret).toString('base64');
 
-      // Try to use onBehalfOf for a different project
-      // This should fail
+      // with reference to profile resource
       const res1 = await request(app)
         .post(`/fhir/R4/Patient`)
         .set('Authorization', basicAuth)
@@ -327,6 +326,27 @@ describe('On Behalf Of', () => {
             code: 'invalid',
             details: { text: 'Authentication error' },
             diagnostics: expect.stringContaining('Forbidden'),
+          }),
+        ],
+      });
+
+      // with reference to ProjectMembership
+      const res2 = await request(app)
+        .post(`/fhir/R4/Patient`)
+        .set('Authorization', basicAuth)
+        .set('X-Medplum', 'extended')
+        .set('X-Medplum-On-Behalf-Of', getReferenceString(adminAccount2.membership))
+        .set('Content-Type', ContentType.FHIR_JSON)
+        .send({ resourceType: 'Patient' });
+      expect(res2).toHaveStatus(400);
+      expect(res2.body).toMatchObject<OperationOutcome>({
+        resourceType: 'OperationOutcome',
+        issue: [
+          expect.objectContaining<OperationOutcomeIssue>({
+            severity: 'error',
+            code: 'invalid',
+            details: { text: 'Authentication error' },
+            diagnostics: expect.stringContaining('Not found'),
           }),
         ],
       });
