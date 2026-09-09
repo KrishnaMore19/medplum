@@ -27,8 +27,8 @@ import type { DateTimeRange } from '../types';
 import type { CalendarsPanelItem } from './CalendarsPanel/CalendarsPanel';
 import { CalendarsPanel } from './CalendarsPanel/CalendarsPanel';
 import { CalendarTimezoneNotice } from './CalendarTimezoneNotice';
-import { getCalendarTimezones } from './SchedulingWorkspace.utils';
 import classes from './SchedulingWorkspace.module.css';
+import { getCalendarTimezones } from './SchedulingWorkspace.utils';
 
 const EMPTY_CANDIDATES: Readonly<Record<SchedulingRole, ScheduleCandidate[]>> = { provider: [], room: [], device: [] };
 
