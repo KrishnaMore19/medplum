@@ -5,7 +5,6 @@ import type { Appointment } from '@medplum/fhirtypes';
 import type { Meta } from '@storybook/react';
 import { IconCalendarCheck } from '@tabler/icons-react';
 import type { JSX } from 'react';
-import { CalendarWeekFixtures, inViewerTimezone, PatientFixtures, SchedulingFixtures } from '../stories/scheduling';
 import {
   withBookStub,
   withCancelStub,
@@ -14,6 +13,7 @@ import {
   withMockedDate,
   withValueSetStub,
 } from '../stories/decorators';
+import { CalendarWeekFixtures, inViewerTimezone, PatientFixtures, SchedulingFixtures } from '../stories/scheduling';
 import { SchedulingWorkspace } from './SchedulingWorkspace';
 
 /** The clinic as the fixtures keep it: Dr. Rivera in Eastern time, Dr. Okafor in Central. */
@@ -27,13 +27,7 @@ const LOCAL_FIXTURES = inViewerTimezone(ELSEWHERE_FIXTURES);
 export default {
   title: 'Medplum/SchedulingWorkspace',
   component: SchedulingWorkspace,
-  decorators: [
-    withBookStub(),
-    withCancelStub(),
-    withValueSetStub(),
-    withFindStub(),
-    withMockedDate,
-  ],
+  decorators: [withBookStub(), withCancelStub(), withValueSetStub(), withFindStub(), withMockedDate],
   parameters: {
     // Default seeding includes a lot of cluttering Slot resources for Dr. Alice Smith; skip it.
     skipDefaultSeeding: true,
