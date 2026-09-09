@@ -46,7 +46,7 @@ function buildGroups(
     )
   );
   const resources = indexByReference(offers.map((offer) => offer.actor));
-  return groupAppointmentsByDay(appointments, TIMEZONE, resources)[0].groups;
+  return groupAppointmentsByDay(appointments, TIMEZONE, undefined, resources)[0].groups;
 }
 
 /**

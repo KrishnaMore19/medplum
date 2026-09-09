@@ -9,6 +9,7 @@ import {
   getIdentifierByType,
   getReferenceString,
   getSchedulingTimezone,
+  isDefined,
   MRN_IDENTIFIER_TYPE,
   normalizeErrorString,
 } from '@medplum/core';

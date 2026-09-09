@@ -53,7 +53,7 @@ function buildGroup(
     })
   );
   const resources = resolved ? indexByReference(actors) : undefined;
-  return groupAppointmentsByDay(appointments, TIMEZONE, resources)[0].groups[0];
+  return groupAppointmentsByDay(appointments, TIMEZONE, undefined, resources)[0].groups[0];
 }
 
 /**

@@ -30,7 +30,7 @@ function buildGroup(
   resources: readonly SchedulingActorResource[] = []
 ): AppointmentSlotGroup {
   const appointments = [MORNING, LATER].map((start) => buildProposedAppointment({ start, actorReferences: actors }));
-  return groupAppointmentsByDay(appointments, EASTERN, indexByReference(resources))[0].groups[0];
+  return groupAppointmentsByDay(appointments, EASTERN, undefined, indexByReference(resources))[0].groups[0];
 }
 
 function setup(
@@ -39,7 +39,12 @@ function setup(
 ): void {
   const { onSelectAppointment = vi.fn(), medplum = new MockClient() } = options;
   renderWithMedplum(
-    <AppointmentSlotGroupCard group={group} timezone={EASTERN} onSelectAppointment={onSelectAppointment} />,
+    <AppointmentSlotGroupCard
+      group={group}
+      timezone={EASTERN}
+      viewerTimezone={EASTERN}
+      onSelectAppointment={onSelectAppointment}
+    />,
     medplum
   );
 }
